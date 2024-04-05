@@ -1,21 +1,35 @@
 const Tour = require('../models/tourModel');
 
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    // results: tours.length,
-    // data: {
-    //   tours,
-    // },
-  });
+exports.getAllTours = async (req, res) => {
+  try {
+    const allTours = await Tour.find();
+
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: allTours.length,
+      data: { allTours },
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
-exports.getTour = (req, res) => {
-  res.status(200).send({
-    status: 'success',
-    data: null,
-  });
+exports.getTour = async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const tour = await Tour.findById(id);
+    // const tour = await Tour.findOne({ _id: id });
+
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      data: { tour },
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };
 
 exports.updateTour = (req, res) => {
