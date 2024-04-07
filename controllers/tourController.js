@@ -6,7 +6,7 @@ exports.getAllTours = async (req, res) => {
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
-    // let query = Tour.find(queryObj);
+    let query = Tour.find(queryObj);
     // const allTours = await query;
 
     // const allTours = await Tour.find()
@@ -20,7 +20,7 @@ exports.getAllTours = async (req, res) => {
     // 1B) Advanced Filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|lte|lt|gt)\b/g, (match) => `$${match}`);
-    let query = Tour.find(JSON.parse(queryStr));
+    query = Tour.find(JSON.parse(queryStr));
     // const allTours = await query;
 
     // 2) Sorting
@@ -39,6 +39,20 @@ exports.getAllTours = async (req, res) => {
     } else {
       query = query.select('-__v');
     }
+
+    // 4) Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      if (skip >= numTours) throw new Error('this page does not exist');
+    }
+
+    // Execute Query
     const allTours = await query;
 
     res.status(200).json({
@@ -48,7 +62,10 @@ exports.getAllTours = async (req, res) => {
       data: { allTours },
     });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(404).json({
+      status: 'fail',
+      message: error.message,
+    });
   }
 };
 
