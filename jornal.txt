@@ -45,3 +45,10 @@
     //   const numTours = await Tour.countDocuments();
     //   if (skip >= numTours) throw new Error('this page does not exist');
     // }
+
+    url: uniform source locator
+    http: hypertext transfer protocol
+    https: hypertext transfer protocol secure
+    ftp: file transfer protocol
+    smtp: simple mail transfer protocol
+    dns: domain name system
