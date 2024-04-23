@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const userRouter = require('./routers/userRoutes');
 const tourRouter = require('./routers/tourRoutes');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
@@ -24,22 +26,14 @@ app.all('*', (req, res, next) => {
   //   status: 'fail',
   //   message: `Can't find ${req.originalUrl} on this server`,
   // });
-  const err = new Error(`Can't find ${req.originalUrl} on this server`);
-  err.statusCode = 400;
-  err.status = 'fail';
-  next(err);
+
+  // const err = new Error(`Can't find ${req.originalUrl} on this server`);
+  // err.statusCode = 400;
+  // err.status = 'fail';
+  next(new AppError(`Can't find ${req.originalUrl} on this server`, 400));
 });
 
 // Error Handling Middleware
-app.use((err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
-
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-  next();
-});
+app.use(globalErrorHandler);
 
 module.exports = app;
