@@ -11,8 +11,13 @@ const os = require('os');
 // console.log(os.devNull);
 // console.log(os.endianness());
 // console.log(os.EOL);
-console.log(os.homedir());
-console.log(os.hostname());
+// console.log(os.homedir());
+// console.log(os.hostname());
+// console.log(os.machine());
+// console.log(os.networkInterfaces());
+// console.log(os.platform());
+// console.log(os.totalmem());
+// console.log(os.type());
 
 const dotenv = require('dotenv');
 
